@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>San Valentín 💖</title>
+
+<style>
+body{
+    margin:0;
+    padding:0;
+    font-family:'Segoe UI', sans-serif;
+    background: linear-gradient(45deg,#ff4e50,#ff9a9e,#fad0c4);
+    background-size:400% 400%;
+    animation:fondo 10s ease infinite;
+    text-align:center;
+    color:white;
+    overflow:hidden;
+}
+
+@keyframes fondo{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+h1{
+    margin-top:60px;
+    font-size:3em;
+}
+
+button{
+    padding:15px 25px;
+    border:none;
+    border-radius:30px;
+    font-size:1.2em;
+    cursor:pointer;
+    margin:10px;
+    transition:0.3s;
+}
+
+#si{
+    background:#ff4e50;
+    color:white;
+}
+
+#no{
+    background:white;
+    color:#ff4e50;
+    position:absolute;
+}
+
+#btnCarta{
+    background:white;
+    color:#ff4e50;
+}
+
+#carta{
+    display:none;
+    background:white;
+    color:#ff4e50;
+    width:300px;
+    margin:20px auto;
+    padding:20px;
+    border-radius:15px;
+    animation: aparecer 1s ease forwards;
+}
+
+@keyframes aparecer{
+    from{opacity:0; transform:scale(0.8);}
+    to{opacity:1; transform:scale(1);}
+}
+
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+}
+
+.heart{
+    position:absolute;
+    font-size:20px;
+    animation: subir 6s linear infinite;
+}
+
+@keyframes subir{
+    from{transform:translateY(100vh); opacity:1;}
+    to{transform:translateY(-10vh); opacity:0;}
+}
+
+/* Ocultar reproductor */
+#player{
+    position:fixed;
+    width:0;
+    height:0;
+    border:0;
+}
+</style>
+</head>
+
+<body>
+
+<h1>💍 ¿Quieres ser mi San Valentín? 💖</h1>
+
+<button id="si" onclick="celebrar()">Sí 💖</button>
+<button id="no">No 😢</button>
+<button id="btnCarta" onclick="mostrarCarta()">💌 Abrir Carta</button>
+
+<div id="carta">
+    💖 Desde que llegaste haces que todo sea más bonito.<br><br>
+    Gracias por existir y por ser tan especial, te amo mucho mi amorcito 💕<br><br>
+    Con cariño nos veremos mañana en nuestra cita en el MUT ❤️
+</div>
+
+<canvas id="fireworks"></canvas>
+
+<!-- YouTube oculto -->
+<iframe id="player"
+src="https://www.youtube.com/embed/2Vv-BfVoq4g?enablejsapi=1"
+allow="autoplay">
+</iframe>
+
+<script>
+
+// BOTÓN QUE HUYE
+const btnNo = document.getElementById("no");
+
+btnNo.addEventListener("mouseover", ()=>{
+    const x = Math.random() * (window.innerWidth - 100);
+    const y = Math.random() * (window.innerHeight - 50);
+    btnNo.style.position = "absolute";
+    btnNo.style.left = x + "px";
+    btnNo.style.top = y + "px";
+});
+
+// MOSTRAR CARTA
+function mostrarCarta(){
+    document.getElementById("carta").style.display="block";
+}
+
+// CORAZONES
+function crearCorazon(){
+    const corazon=document.createElement("div");
+    corazon.classList.add("heart");
+    corazon.innerHTML="❤️";
+    corazon.style.left=Math.random()*100+"vw";
+    corazon.style.fontSize=(Math.random()*20+15)+"px";
+    corazon.style.animationDuration=(Math.random()*3+3)+"s";
+    document.body.appendChild(corazon);
+
+    setTimeout(()=>{corazon.remove();},6000);
+}
+
+setInterval(crearCorazon,400);
+
+// FUEGOS ARTIFICIALES
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function crearFuegos(){
+    for(let i=0;i<120;i++){
+        particles.push({
+            x: Math.random()*canvas.width,
+            y: Math.random()*canvas.height/2,
+            radius: 2,
+            color: `hsl(${Math.random()*360},100%,60%)`,
+            speedX: (Math.random()-0.5)*6,
+            speedY: (Math.random()-0.5)*6,
+            life: 80
+        });
+    }
+}
+
+function animar(){
+    requestAnimationFrame(animar);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach((p,index)=>{
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.life--;
+
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+        ctx.fillStyle=p.color;
+        ctx.fill();
+
+        if(p.life<=0){
+            particles.splice(index,1);
+        }
+    });
+}
+
+function celebrar(){
+    crearFuegos();
+
+    // Activar música
+    const iframe = document.getElementById("player");
+    iframe.src += "&autoplay=1";
+
+    alert("🎉 Sabía que dirías que sí, jejejejejeje se que me amas 💖");
+}
+
+animar();
+
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
